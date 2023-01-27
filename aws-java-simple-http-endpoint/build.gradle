@@ -8,27 +8,39 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-    compile (
-        'com.amazonaws:aws-lambda-java-core:1.1.0',
+  implementation (
+        'com.amazonaws:aws-lambda-java-core:1.2.2',
         'com.amazonaws:aws-lambda-java-log4j:1.0.0',
+        'com.amazonaws:aws-lambda-java-events:3.11.0',
         'com.fasterxml.jackson.core:jackson-core:2.8.5',
         'com.fasterxml.jackson.core:jackson-databind:2.8.5',
         'com.fasterxml.jackson.core:jackson-annotations:2.8.5'
     )
 }
 
-// http://docs.aws.amazon.com/lambda/latest/dg/create-deployment-pkg-zip-java.html
-task buildZip(type: Zip) {
-    baseName = "aws-java-simple-http-endpoint"
-    from compileJava
-    from processResources
-    into('lib') {
-        from configurations.runtime
-    }
+
+task packageBig(type: Zip) {
+  from compileJava
+  from processResources
+  into('lib') {
+    from configurations.runtimeClasspath
+  }
 }
 
-build.dependsOn buildZip
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '3.2.1'
+task packageLibs(type: Zip) {
+  into('java/lib') {
+    from configurations.runtimeClasspath
+  }
 }
+
+task packageSmall(type: Zip) {
+  from compileJava
+  from processResources
+}
+
+java {
+  sourceCompatibility = JavaVersion.VERSION_1_8
+  targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+build.dependsOn packageSmall
