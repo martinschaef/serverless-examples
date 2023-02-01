@@ -1,12 +1,11 @@
 service: schaef-aws-java-simple-http-endpoint
-frameworkVersion: '2'
 
 provider:
   name: aws
   runtime: java8
 
 package:
-  artifact: build/distributions/aws-java-simple-http-endpoint.zip
+  artifact: target/aws-java-simple-http-endpoint.jar
 
 functions:
   currentTime:
